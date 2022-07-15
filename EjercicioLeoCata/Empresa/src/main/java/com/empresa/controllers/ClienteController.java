@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -37,8 +38,45 @@ public class ClienteController {
             model.addAttribute("listaCliente",listaClientes);
             return "mostrarCliente.jsp";
         }
+    }
 
+    @RequestMapping("/mostrar")
+    public String mostrarCliente(Model model){
+        List<Cliente> listaClientes = clienteService.findId();
+        model.addAttribute("listaCliente",listaClientes);
+        return "mostrarCliente.jsp";
+    }
 
+    @RequestMapping("/editar/{id}")
+    public String editarCliente(@PathVariable("id")Integer id, Model model){
+        Cliente cliente = clienteService.buscarId(id);
+        model.addAttribute("cliente",cliente);
+        return "editarCliente.jsp";
+
+    }
+
+    @PostMapping("/actualizar/{id}")
+    public String actualizarCliente(@PathVariable("id") Integer id,
+                                    @ModelAttribute("cliente")Cliente cliente,
+                                    BindingResult result,
+                                    Model model){
+        if (result.hasErrors()) {
+            model.addAttribute("msgError", "Ingrese los datos correctos");
+            return "editarCliente.jsp";
+        }else {
+            clienteService.registroCliente(cliente);
+            List<Cliente> listaClientes = clienteService.findId();
+            model.addAttribute("listaCliente",listaClientes);
+            return "mostrarCliente.jsp";
+        }
+    }
+
+    @RequestMapping("/eliminar/{id}")
+    public String eliminarCliente(@PathVariable("id")Integer id){
+
+        clienteService.eliminarById(id);
+
+        return "redirect:/cliente/mostrar";
     }
 
 }
