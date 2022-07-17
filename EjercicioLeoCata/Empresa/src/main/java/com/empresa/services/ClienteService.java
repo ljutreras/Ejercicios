@@ -19,4 +19,12 @@ public class ClienteService {
     public List<Cliente> findId() {
         return clienteRepository.findAll();
     }
+
+    public Cliente BuscarID(Integer id) {
+        return clienteRepository.findById(id).get();
+    }
+
+    public void eliminarClienteID(Integer id) {
+        clienteRepository.deleteById(id);
+    }
 }
